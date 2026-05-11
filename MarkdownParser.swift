@@ -244,6 +244,7 @@ private struct Parser {
 
     func inline(_ text: String) -> String {
         var s = embedImages(text)
+        s = s.replacingOccurrences(of: #"==(.+?)=="#,           with: "<mark>$1</mark>",           options: .regularExpression)
         s = s.replacingOccurrences(of: #"~~(.+?)~~"#,          with: "<del>$1</del>",             options: .regularExpression)
         s = s.replacingOccurrences(of: #"\*\*\*(.+?)\*\*\*"#, with: "<strong><em>$1</em></strong>", options: .regularExpression)
         s = s.replacingOccurrences(of: #"\*\*(.+?)\*\*"#,     with: "<strong>$1</strong>",        options: .regularExpression)
@@ -487,6 +488,14 @@ ul, ol { padding-left: 1.8em; margin: 7px 0; }
 li { margin: 2px 0; }
 hr { border: none; border-top: 1px solid #e0e7ff; margin: 18px 0; }
 del { color: #9ca3af; }
+mark {
+    background: none;
+    color: inherit;
+    border: 1.5px solid #f97316;
+    border-radius: 0.6em;
+    padding: 0.05em 0.35em;
+    font-style: normal;
+}
 
 .img-missing {
     color: #dc2626; font-size: 0.84em;
