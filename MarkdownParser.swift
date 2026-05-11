@@ -367,7 +367,7 @@ private let css = """
 html, body { margin: 0; padding: 0; background: white; }
 body {
     font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; line-height: 1.65; color: #111827;
+    font-size: 16px; line-height: 1.7; color: #111827;
 }
 
 /* ── TOC Page ── */
@@ -505,7 +505,7 @@ mark {
 .page-break { page-break-after: always; break-after: page; height: 0; margin: 0; }
 
 @media print {
-    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; font-size: 12pt; }
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; font-size: 14pt; }
     .toc-page, .chapter { padding: 0; }
     section.chapter { page-break-before: always; break-before: page; }
     section.toc-page { page-break-after: always; break-after: page; }

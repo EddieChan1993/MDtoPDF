@@ -84,10 +84,10 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
         let info = NSPrintInfo()
         // A4 in points (72 pt/inch): 595.28 × 841.89
         info.paperSize  = NSSize(width: 595.28, height: 841.89)
-        info.topMargin    = 50    // ~17.6mm
+        info.topMargin    = 50
         info.bottomMargin = 50
-        info.leftMargin   = 56   // ~19.8mm（留装订边）
-        info.rightMargin  = 50
+        info.leftMargin   = 56
+        info.rightMargin  = 56
         info.isHorizontallyCentered = false
         info.isVerticallyCentered   = false
         info.jobDisposition = .save
