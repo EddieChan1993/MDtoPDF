@@ -37,11 +37,10 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
     func start() {
         _activeTask = self
 
-        // 用打印内容宽度（去除左右边距）初始化 WebView，使屏幕排版与 PDF 一致
-        let contentWidth: CGFloat = 595.28 - 56 - 56   // 483.28pt
-        let frame = NSRect(x: 0, y: 0, width: contentWidth, height: 842)
+        // WebView 用完整 A4 宽度，NSPrintInfo 的等宽边距负责裁剪两侧
+        let frame = NSRect(x: 0, y: 0, width: 595, height: 842)
         let win = NSWindow(
-            contentRect: NSRect(x: -20_000, y: -20_000, width: contentWidth, height: 842),
+            contentRect: NSRect(x: -20_000, y: -20_000, width: 595, height: 842),
             styleMask: .borderless, backing: .buffered, defer: false
         )
         win.isReleasedWhenClosed = false
