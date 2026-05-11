@@ -363,7 +363,7 @@ private struct Parser {
 
 private let css = """
 *, *::before, *::after { box-sizing: border-box; }
-@page { size: A4 portrait; margin: 50pt 56pt; }
+@page { size: A4; margin: 0; }
 html, body { margin: 0; padding: 0; background: white; }
 body {
     font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Helvetica Neue', Arial, sans-serif;

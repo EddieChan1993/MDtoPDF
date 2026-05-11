@@ -83,12 +83,11 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
 
         let info = NSPrintInfo()
         // A4 in points (72 pt/inch): 595.28 × 841.89
-        // Margins are controlled entirely by CSS @page to avoid NSPrintInfo/CSS stacking issues
         info.paperSize    = NSSize(width: 595.28, height: 841.89)
-        info.topMargin    = 0
-        info.bottomMargin = 0
-        info.leftMargin   = 0
-        info.rightMargin  = 0
+        info.topMargin    = 50
+        info.bottomMargin = 50
+        info.leftMargin   = 56
+        info.rightMargin  = 56
         info.isHorizontallyCentered = false
         info.isVerticallyCentered   = false
         info.jobDisposition = .save
