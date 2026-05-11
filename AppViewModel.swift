@@ -46,6 +46,17 @@ class AppViewModel: ObservableObject {
 
     // MARK: - Actions
 
+    func pickFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.message = "选择包含 Markdown 文件的文件夹"
+        panel.prompt = "选择"
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        loadFolder(url)
+    }
+
     func reset() {
         folderURL = nil
         mdFiles = []

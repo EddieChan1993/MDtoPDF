@@ -64,6 +64,10 @@ struct ContentView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
+                Button("选择文件夹…") { vm.pickFolder() }
+                    .buttonStyle(.bordered)
+                    .controlSize(.regular)
+                    .padding(.top, 4)
             }
             .padding(36)
         }
