@@ -122,6 +122,7 @@ struct ContentView: View {
                             .foregroundColor(Color.secondary.opacity(0.4))
                     }
                     .padding(.vertical, 3)
+                    .padding(.trailing, 16)
                 }
                 .onMove { from, to in vm.mdFiles.move(fromOffsets: from, toOffset: to) }
             }

@@ -357,148 +357,138 @@ private let css = """
 html, body { margin: 0; padding: 0; background: white; }
 body {
     font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; line-height: 1.8; color: #24292e;
+    font-size: 14px; line-height: 1.65; color: #111827;
 }
 
 /* ── TOC Page ── */
-.toc-page {
-    padding: 70px 70px 50px;
-    min-height: 900px;
-}
+.toc-page { padding: 60px 70px 40px; min-height: 900px; }
 .toc-title {
     text-align: center;
-    font-size: 1.9em;
-    letter-spacing: 0.8em;
-    text-indent: 0.8em;
-    margin-bottom: 50px;
-    padding-bottom: 0;
-    border: none;
-    color: #111;
-    font-weight: 700;
+    font-size: 1.8em;
+    letter-spacing: 0.7em;
+    text-indent: 0.7em;
+    margin-bottom: 36px;
+    color: #1e1b4b;
+    font-weight: 800;
 }
-.toc-list { font-size: 0.95em; }
-
-/* 章节行 */
+.toc-list { font-size: 0.94em; }
 .toc-chapter {
-    margin-top: 20px;
-    padding: 7px 0 5px;
-    border-bottom: 1.5px solid #bbb;
+    margin-top: 14px;
+    padding: 6px 0 4px;
+    border-bottom: 1.5px solid #c7d2fe;
     font-weight: 700;
-    font-size: 1.02em;
+    font-size: 1em;
 }
 .toc-chapter:first-child { margin-top: 0; }
-.toc-chapter a { text-decoration: none; color: #111; display: flex; align-items: center; gap: 10px; }
+.toc-chapter a { text-decoration: none; color: #1e1b4b; display: flex; align-items: center; gap: 10px; }
 .toc-chapter-num {
-    font-size: 0.78em;
-    color: #888;
-    font-weight: 400;
-    letter-spacing: 0.05em;
+    font-size: 0.75em;
+    color: #6366f1;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     min-width: 2.2em;
 }
 
-/* 章内标题行 */
-.toc-item {
-    padding: 4px 0;
-    border-bottom: 1px dotted #ddd;
-}
-.toc-item a { text-decoration: none; color: #333; display: block; }
-.toc-h1 { padding-left: 1.2em; font-weight: 600; }
-.toc-h2 { padding-left: 2.4em; color: #555; font-size: 0.93em; }
-.toc-h3 { padding-left: 3.8em; color: #777; font-size: 0.88em; }
-
 /* ── Chapter Content ── */
-.chapter { padding: 40px 60px; max-width: 794px; }
+.chapter { padding: 36px 60px; max-width: 794px; }
 
-/* 章节编号标签，如 "CHAPTER 01" */
 .chapter-label {
-    font-size: 0.72em;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    color: #999;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-}
-
-/* 章节标题栏（文件名） */
-.chapter-title-bar {
-    font-size: 1.65em;
+    font-size: 0.68em;
     font-weight: 700;
-    color: #111;
-    padding-bottom: 12px;
-    margin-bottom: 28px;
-    border-bottom: 2.5px solid #333;
-    line-height: 1.3;
+    letter-spacing: 0.2em;
+    color: #6366f1;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.chapter-title-bar {
+    font-size: 1.7em;
+    font-weight: 800;
+    color: #1e1b4b;
+    padding-bottom: 10px;
+    margin-bottom: 22px;
+    border-bottom: 3px solid #6366f1;
+    line-height: 1.25;
 }
 
-h1 { font-size: 2em;   border-bottom: 2px solid #eaecef; padding-bottom: 0.3em; margin-top: 1.2em; }
-h2 { font-size: 1.6em; border-bottom: 1px solid #eaecef; padding-bottom: 0.2em; margin-top: 1.1em; }
-h3 { font-size: 1.3em; margin-top: 1em; }
-h4 { font-size: 1.1em; }
-h5, h6 { font-size: 1em; color: #555; }
+/* 标题层级：颜色 + 大小形成清晰视觉层次 */
+h1 {
+    font-size: 1.75em; font-weight: 800; color: #1e1b4b;
+    border-bottom: 2px solid #e0e7ff;
+    padding-bottom: 0.25em; margin: 1.1em 0 0.5em;
+}
+h2 {
+    font-size: 1.4em; font-weight: 700; color: #312e81;
+    border-bottom: 1px solid #e0e7ff;
+    padding-bottom: 0.2em; margin: 1em 0 0.45em;
+}
+h3 {
+    font-size: 1.18em; font-weight: 700; color: #3730a3;
+    margin: 0.9em 0 0.35em;
+}
+h4 { font-size: 1.05em; font-weight: 600; color: #4338ca; margin: 0.8em 0 0.3em; }
+h5, h6 { font-size: 0.95em; font-weight: 600; color: #6366f1; margin: 0.7em 0 0.25em; }
 h1:first-child, h2:first-child, h3:first-child { margin-top: 0; }
 
-p { margin: 10px 0; }
-a { color: #0366d6; text-decoration: none; }
-strong { font-weight: 600; }
+p { margin: 7px 0; }
+a { color: #4f46e5; text-decoration: none; }
+strong { font-weight: 700; color: #111827; }
 
 img {
     max-width: 100%; height: auto;
-    display: block; margin: 16px auto; border-radius: 4px;
+    display: block; margin: 12px auto; border-radius: 4px;
 }
 
 code {
     font-family: 'SF Mono', Menlo, 'Courier New', monospace;
-    font-size: 0.88em; background: #f6f8fa;
-    padding: 0.2em 0.4em; border-radius: 3px; color: #e36209;
+    font-size: 0.86em; background: #f0f0ff;
+    padding: 0.15em 0.4em; border-radius: 3px; color: #7c3aed;
 }
 pre {
-    background: #f6f8fa; border: 1px solid #e1e4e8;
-    border-radius: 6px; padding: 16px; overflow-x: auto;
-    margin: 16px 0; line-height: 1.5;
+    background: #1e1b2e; border: none;
+    border-radius: 6px; padding: 14px 16px;
+    margin: 12px 0; line-height: 1.55;
 }
-pre code { background: none; padding: 0; color: #24292e; font-size: 0.85em; }
+pre code {
+    background: none; padding: 0;
+    color: #e2e8f0; font-size: 0.84em;
+}
 
 blockquote {
-    border-left: 4px solid #dfe2e5;
-    background: #f8f9fa;
-    color: #444;
-    margin: 2px 0;
-    padding: 6px 16px;
+    border-left: 4px solid #6366f1;
+    background: #f5f3ff;
+    color: #374151;
+    margin: 10px 0;
+    padding: 6px 14px;
     border-radius: 0 4px 4px 0;
 }
-*:not(blockquote) + blockquote { margin-top: 14px; }
-blockquote:not(:has(+ blockquote)) { margin-bottom: 14px; }
-blockquote p { margin: 4px 0; }
+blockquote p { margin: 3px 0; }
 blockquote h1, blockquote h2, blockquote h3,
 blockquote h4, blockquote h5, blockquote h6 {
-    margin: 4px 0; border-bottom: none; color: #333;
+    margin: 4px 0; border-bottom: none;
 }
 
 table {
-    border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 0.93em;
+    border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 0.91em;
 }
-th, td { border: 1px solid #dfe2e5; padding: 8px 14px; text-align: left; }
-th { background: #f6f8fa; font-weight: 600; }
-tr:nth-child(even) { background: #fafbfc; }
+th, td { border: 1px solid #e0e7ff; padding: 6px 12px; text-align: left; }
+th { background: #eef2ff; font-weight: 700; color: #312e81; }
+tr:nth-child(even) { background: #f9fafb; }
 
-ul, ol { padding-left: 2em; margin: 10px 0; }
-li { margin: 4px 0; }
-hr { border: none; border-top: 1px solid #eaecef; margin: 24px 0; }
-del { color: #6a737d; }
+ul, ol { padding-left: 1.8em; margin: 7px 0; }
+li { margin: 2px 0; }
+hr { border: none; border-top: 1px solid #e0e7ff; margin: 18px 0; }
+del { color: #9ca3af; }
 
 .img-missing {
-    color: #cb2431; font-size: 0.85em;
-    background: #ffdce0; padding: 2px 6px; border-radius: 3px;
+    color: #dc2626; font-size: 0.84em;
+    background: #fee2e2; padding: 2px 6px; border-radius: 3px;
 }
 
-.page-break {
-    page-break-after: always; break-after: page; height: 0; margin: 0;
-}
+.page-break { page-break-after: always; break-after: page; height: 0; margin: 0; }
+
 @media print {
-    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; font-size: 11pt; }
-    /* padding 交给 NSPrintInfo 页边距控制，避免双重空白 */
+    body { print-color-adjust: exact; -webkit-print-color-adjust: exact; font-size: 12pt; }
     .toc-page, .chapter { padding: 0; }
-    /* 确保章节分页 */
     section.chapter { page-break-before: always; break-before: page; }
     section.toc-page { page-break-after: always; break-after: page; }
 }
