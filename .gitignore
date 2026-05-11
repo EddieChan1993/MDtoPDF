@@ -1,0 +1,8 @@
+.build/
+*.app/
+*.iconset/
+AppIcon.svg
+Sources/
+Package.swift
+*.resolved
+.DS_Store
