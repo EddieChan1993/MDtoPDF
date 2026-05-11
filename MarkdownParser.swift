@@ -368,10 +368,11 @@ html, body { margin: 0; padding: 0; background: white; }
 body {
     font-family: -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Helvetica Neue', Arial, sans-serif;
     font-size: 16px; line-height: 1.7; color: #111827;
+    text-align: justify; -webkit-hyphens: auto; hyphens: auto;
 }
 
 /* ── TOC Page ── */
-.toc-page { padding: 60px 70px 40px; min-height: 900px; }
+.toc-page { padding: 60px 70px 40px; min-height: 900px; text-align: left; }
 .toc-title {
     text-align: center;
     font-size: 1.8em;
@@ -437,6 +438,7 @@ h3 {
 }
 h4 { font-size: 1.05em; font-weight: 600; color: #4338ca; margin: 0.8em 0 0.3em; }
 h5, h6 { font-size: 0.95em; font-weight: 600; color: #6366f1; margin: 0.7em 0 0.25em; }
+h1, h2, h3, h4, h5, h6 { text-align: left; }
 h1:first-child, h2:first-child, h3:first-child { margin-top: 0; }
 
 p { margin: 7px 0; }
@@ -456,7 +458,7 @@ code {
 pre {
     background: #1e1b2e; border: none;
     border-radius: 6px; padding: 14px 16px;
-    margin: 12px 0; line-height: 1.55;
+    margin: 12px 0; line-height: 1.55; text-align: left;
 }
 pre code {
     background: none; padding: 0;
