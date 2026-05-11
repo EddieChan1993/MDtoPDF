@@ -459,7 +459,7 @@ pre {
     background: #1e1b2e; border: none;
     border-radius: 6px; padding: 14px 16px;
     margin: 12px 0; line-height: 1.55; text-align: left;
-    white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word;
+    white-space: pre-wrap; overflow-wrap: break-word;
 }
 pre code {
     background: none; padding: 0;
