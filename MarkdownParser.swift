@@ -97,6 +97,9 @@ private struct Parser {
     var tableRows: [String] = []
     var tableHasHeader = false
 
+    var inBlockquote = false
+    var blockquoteLines: [String] = []
+
     var headings: [Heading] = []
     var headingIDCounters: [String: Int] = [:]
 
@@ -111,7 +114,7 @@ private struct Parser {
             }
 
             if line.hasPrefix("```") {
-                flushList(); flushTable()
+                flushList(); flushTable(); flushBlockquote()
                 codeLang = String(line.dropFirst(3)).trimmingCharacters(in: .whitespaces)
                 inCodeBlock = true
                 continue
@@ -120,19 +123,32 @@ private struct Parser {
             let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
 
             if trimmed.isEmpty {
-                flushList(); flushTable()
+                flushList(); flushTable(); flushBlockquote()
                 output += "\n"
                 continue
             }
 
             // Table
             if trimmed.hasPrefix("|") {
+                flushBlockquote()
                 if isSeparatorRow(trimmed) { tableHasHeader = true }
                 else { tableRows.append(trimmed) }
                 inTable = true
                 continue
             } else if inTable {
                 flushTable()
+            }
+
+            // Blockquote — buffer consecutive "> " lines and parse recursively
+            if trimmed.hasPrefix(">") {
+                flushList(); flushTable()
+                let after = trimmed.dropFirst(1)
+                let content = after.hasPrefix(" ") ? String(after.dropFirst(1)) : String(after)
+                blockquoteLines.append(content)
+                inBlockquote = true
+                continue
+            } else if inBlockquote {
+                flushBlockquote()
             }
 
             // Headers
@@ -149,23 +165,6 @@ private struct Parser {
                (trimmed.allSatisfy({ $0 == "-" }) && trimmed.count >= 3) {
                 flushList()
                 output += "<hr>\n"
-                continue
-            }
-
-            // Blockquote — handles ">", "> text", "> ## heading"
-            if trimmed.hasPrefix(">") {
-                flushList(); flushTable()
-                let after = trimmed.dropFirst(1)
-                let content = after.hasPrefix(" ") ? String(after.dropFirst(1)) : String(after)
-                if content.isEmpty {
-                    // 单独的 ">" 行作为空白间隔，静默跳过
-                } else if let (level, headingText) = parseHeader(content.trimmingCharacters(in: .whitespacesAndNewlines)) {
-                    let id = makeHeadingID(headingText)
-                    headings.append(Heading(level: level, text: headingText, id: id))
-                    output += "<blockquote><h\(level) id=\"\(id)\">\(inline(headingText))</h\(level)></blockquote>\n"
-                } else {
-                    output += "<blockquote><p>\(inline(content))</p></blockquote>\n"
-                }
                 continue
             }
 
@@ -190,7 +189,7 @@ private struct Parser {
             output += "<p>\(inline(trimmed))</p>\n"
         }
 
-        flushList(); flushTable()
+        flushList(); flushTable(); flushBlockquote()
         if inCodeBlock { flushCode() }
         return output
     }
@@ -209,6 +208,16 @@ private struct Parser {
         let cls = codeLang.isEmpty ? "" : " class=\"language-\(codeLang)\""
         output += "<pre><code\(cls)>\(escaped)</code></pre>\n"
         codeLines = []; codeLang = ""; inCodeBlock = false
+    }
+
+    mutating func flushBlockquote() {
+        guard inBlockquote, !blockquoteLines.isEmpty else {
+            inBlockquote = false; blockquoteLines = []; return
+        }
+        var sub = Parser(baseDirectory: baseDirectory)
+        let inner = sub.convert(blockquoteLines.joined(separator: "\n"))
+        output += "<blockquote>\(inner)</blockquote>\n"
+        inBlockquote = false; blockquoteLines = []
     }
 
     mutating func flushTable() {
