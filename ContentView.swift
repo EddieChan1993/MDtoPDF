@@ -213,33 +213,25 @@ struct ContentView: View {
     // MARK: - Bottom Bar
 
     private var bottomBar: some View {
-        VStack(spacing: 0) {
-            if vm.isConverting {
-                VStack(spacing: 6) {
-                    ProgressView(value: vm.progress)
-                        .progressViewStyle(.linear)
-                    Text(vm.statusMessage)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 8)
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                ProgressView(value: vm.progress)
+                    .progressViewStyle(.linear)
+                Text(vm.statusMessage)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
-            HStack {
-                Spacer()
-                HoverScale {
-                    Button("开始转换") { vm.startConversion() }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .disabled(vm.mdFiles.isEmpty || vm.isConverting)
-                }
+            .opacity(vm.isConverting ? 1 : 0)
+
+            HoverScale {
+                Button("开始转换") { vm.startConversion() }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .disabled(vm.mdFiles.isEmpty || vm.isConverting)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, vm.isConverting ? 4 : 14)
-            .padding(.bottom, 16)
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 }
 
