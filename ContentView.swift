@@ -31,19 +31,14 @@ struct ContentView: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header — 用双行结构与右侧 header 底部对齐
+            // Header — 固定高度与右侧文件列表 header 对齐
             HStack {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("历史记录")
-                        .font(.headline)
-                    Text(" ")
-                        .font(.caption)
-                        .opacity(0)   // 占位行，不可见
-                }
+                Text("历史记录")
+                    .font(.headline)
                 Spacer()
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, minHeight: 53)   // 与右侧 header 等高
             .background(Color(NSColor.controlBackgroundColor))
 
             Divider()
@@ -73,12 +68,16 @@ struct ContentView: View {
                 }
 
                 Divider()
+                // 清空按钮 — 与"开始转换"相同样式，红色区分
                 HStack {
                     Spacer()
-                    ClearButton { vm.clearHistory() }
+                    Button("清空历史") { vm.clearHistory() }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .tint(.red)
                     Spacer()
                 }
-                .padding(.vertical, 10)
+                .padding(.vertical, 12)
                 .background(Color(NSColor.controlBackgroundColor))
             }
         }
@@ -153,6 +152,7 @@ struct ContentView: View {
                     Text(vm.folderURL?.lastPathComponent ?? "")
                         .font(.headline)
                         .lineLimit(1)
+                        .truncationMode(.middle)
                     Text("\(vm.mdFiles.count) 个文件 · 拖动行可排序")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -166,7 +166,7 @@ struct ContentView: View {
                         Button("清空") { vm.reset() }
                             .buttonStyle(.bordered)
                             .controlSize(.small)
-                            .foregroundColor(.red)
+                            .tint(.red)
                     }
                 }
             }
@@ -189,6 +189,7 @@ struct ContentView: View {
                         Text(url.lastPathComponent)
                             .font(.callout)
                             .lineLimit(1)
+                            .truncationMode(.middle)
                         Spacer()
                         Image(systemName: "line.3.horizontal")
                             .font(.caption)
@@ -257,8 +258,9 @@ private struct HistoryRow: View {
             Text(url.lastPathComponent)
                 .font(.callout)
                 .lineLimit(1)
+                .truncationMode(.middle)
                 .help(url.path)
-            Spacer()
+            Spacer(minLength: 4)
             Button(action: onDelete) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.callout)
@@ -281,20 +283,3 @@ private struct HistoryRow: View {
     }
 }
 
-// MARK: - Clear Button
-
-private struct ClearButton: View {
-    let action: () -> Void
-    @State private var isHovered = false
-
-    var body: some View {
-        Button(action: action) {
-            Text("清空")
-                .font(.caption)
-                .foregroundColor(isHovered ? .red : .secondary)
-        }
-        .buttonStyle(.plain)
-        .onHover { isHovered = $0 }
-        .animation(.easeInOut(duration: 0.1), value: isHovered)
-    }
-}
