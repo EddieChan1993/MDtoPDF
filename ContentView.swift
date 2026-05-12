@@ -158,6 +158,17 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                 }
                 Spacer()
+                if !vm.isConverting {
+                    HStack(spacing: 8) {
+                        Button("导入") { vm.pickFolder() }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        Button("清空") { vm.reset() }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .foregroundColor(.red)
+                    }
+                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
