@@ -36,10 +36,7 @@ struct ContentView: View {
                     .font(.headline)
                 Spacer()
                 if !vm.history.isEmpty {
-                    Button("清空") { vm.clearHistory() }
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .buttonStyle(.plain)
+                    ClearButton { vm.clearHistory() }
                 }
             }
             .padding(.horizontal, 12)
@@ -52,39 +49,28 @@ struct ContentView: View {
                 VStack {
                     Spacer()
                     Text("暂无历史记录")
-                        .font(.caption)
-                        .foregroundColor(Color.secondary.opacity(0.6))
+                        .font(.callout)
+                        .foregroundColor(Color.secondary.opacity(0.5))
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
             } else {
-                List {
-                    ForEach(vm.history, id: \.self) { url in
-                        HStack(spacing: 6) {
-                            Image(systemName: "folder.fill")
-                                .font(.caption)
-                                .foregroundColor(.accentColor)
-                            Text(url.lastPathComponent)
-                                .font(.caption)
-                                .lineLimit(2)
-                                .help(url.path)
-                            Spacer()
-                            Button(action: { vm.removeFromHistory(url) }) {
-                                Image(systemName: "xmark")
-                                    .font(.system(size: 9))
+                ScrollView {
+                    VStack(spacing: 2) {
+                        ForEach(vm.history, id: \.self) { url in
+                            HistoryRow(url: url) {
+                                vm.removeFromHistory(url)
+                            } onTap: {
+                                vm.loadFolder(url)
                             }
-                            .buttonStyle(.plain)
-                            .foregroundColor(Color.secondary.opacity(0.5))
                         }
-                        .contentShape(Rectangle())
-                        .onTapGesture { vm.loadFolder(url) }
-                        .padding(.vertical, 2)
                     }
+                    .padding(.vertical, 4)
+                    .padding(.horizontal, 6)
                 }
-                .listStyle(.plain)
             }
         }
-        .frame(width: 160)
+        .frame(width: 180)
         .background(Color(NSColor.windowBackgroundColor))
     }
 
@@ -99,7 +85,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Empty: Drop Zone
+    // MARK: - Drop Zone
 
     private var dropZone: some View {
         ZStack {
@@ -143,7 +129,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Loaded: File List
+    // MARK: - File List
 
     private var fileListView: some View {
         VStack(spacing: 0) {
@@ -160,14 +146,6 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                 }
                 Spacer()
-                if !vm.isConverting {
-                    Button(action: { vm.reset() }) {
-                        Image(systemName: "house")
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                    .help("返回首页")
-                }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
@@ -235,5 +213,65 @@ struct ContentView: View {
             .padding(.top, vm.isConverting ? 4 : 14)
             .padding(.bottom, 16)
         }
+    }
+}
+
+// MARK: - History Row
+
+private struct HistoryRow: View {
+    let url: URL
+    let onDelete: () -> Void
+    let onTap: () -> Void
+
+    @State private var isHovered = false
+    @State private var deleteHovered = false
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "folder.fill")
+                .font(.title3)
+                .foregroundColor(.accentColor)
+            Text(url.lastPathComponent)
+                .font(.callout)
+                .lineLimit(1)
+                .help(url.path)
+            Spacer()
+            Button(action: onDelete) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.callout)
+                    .foregroundColor(deleteHovered ? .red : Color.secondary.opacity(0.45))
+            }
+            .buttonStyle(.plain)
+            .opacity(isHovered ? 1 : 0)
+            .onHover { deleteHovered = $0 }
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(isHovered ? Color.accentColor.opacity(0.09) : Color.clear)
+        )
+        .contentShape(Rectangle())
+        .onHover { isHovered = $0 }
+        .onTapGesture { onTap() }
+        .animation(.easeInOut(duration: 0.1), value: isHovered)
+    }
+}
+
+// MARK: - Clear Button
+
+private struct ClearButton: View {
+    let action: () -> Void
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: action) {
+            Text("清空")
+                .font(.caption)
+                .foregroundColor(isHovered ? .red : .secondary)
+        }
+        .buttonStyle(.plain)
+        .onHover { isHovered = $0 }
+        .animation(.easeInOut(duration: 0.1), value: isHovered)
     }
 }
