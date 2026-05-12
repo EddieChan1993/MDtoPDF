@@ -31,14 +31,21 @@ struct ContentView: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header — 固定高度与右侧文件列表 header 对齐
             HStack {
                 Text("历史记录")
                     .font(.headline)
                 Spacer()
+                if !vm.history.isEmpty {
+                    HoverScale {
+                        Button("清空") { vm.clearHistory() }
+                            .buttonStyle(.bordered)
+                            .controlSize(.mini)
+                            .tint(.red)
+                    }
+                }
             }
             .padding(.horizontal, 12)
-            .frame(maxWidth: .infinity, minHeight: 53)   // 与右侧 header 等高
+            .frame(maxWidth: .infinity, minHeight: 53)
             .background(Color(NSColor.controlBackgroundColor))
 
             Divider()
@@ -66,19 +73,6 @@ struct ContentView: View {
                     .padding(.vertical, 4)
                     .padding(.horizontal, 6)
                 }
-
-                Divider()
-                // 清空按钮 — 与"开始转换"相同样式，红色区分
-                HStack {
-                    Spacer()
-                    Button("清空历史") { vm.clearHistory() }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .tint(.red)
-                    Spacer()
-                }
-                .padding(.vertical, 12)
-                .background(Color(NSColor.controlBackgroundColor))
             }
         }
         .frame(width: 180)
@@ -126,10 +120,12 @@ struct ContentView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
-                Button("选择文件夹…") { vm.pickFolder() }
-                    .buttonStyle(.bordered)
-                    .controlSize(.regular)
-                    .padding(.top, 4)
+                HoverScale {
+                    Button("选择文件夹…") { vm.pickFolder() }
+                        .buttonStyle(.bordered)
+                        .controlSize(.regular)
+                }
+                .padding(.top, 4)
             }
             .padding(36)
         }
@@ -160,13 +156,17 @@ struct ContentView: View {
                 Spacer()
                 if !vm.isConverting {
                     HStack(spacing: 8) {
-                        Button("导入") { vm.pickFolder() }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
-                        Button("清空") { vm.reset() }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
-                            .tint(.red)
+                        HoverScale {
+                            Button("导入") { vm.pickFolder() }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                        }
+                        HoverScale {
+                            Button("清空") { vm.reset() }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                                .tint(.red)
+                        }
                     }
                 }
             }
@@ -228,15 +228,35 @@ struct ContentView: View {
             }
             HStack {
                 Spacer()
-                Button("开始转换") { vm.startConversion() }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .disabled(vm.mdFiles.isEmpty || vm.isConverting)
+                HoverScale {
+                    Button("开始转换") { vm.startConversion() }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .disabled(vm.mdFiles.isEmpty || vm.isConverting)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, vm.isConverting ? 4 : 14)
             .padding(.bottom, 16)
         }
+    }
+}
+
+// MARK: - HoverScale
+
+private struct HoverScale<Content: View>: View {
+    @State private var hovered = false
+    let content: () -> Content
+
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
+
+    var body: some View {
+        content()
+            .scaleEffect(hovered ? 1.06 : 1.0)
+            .onHover { hovered = $0 }
+            .animation(.spring(response: 0.2, dampingFraction: 0.6), value: hovered)
     }
 }
 
@@ -268,7 +288,9 @@ private struct HistoryRow: View {
             }
             .buttonStyle(.plain)
             .opacity(isHovered ? 1 : 0)
+            .scaleEffect(deleteHovered ? 1.15 : 1.0)
             .onHover { deleteHovered = $0 }
+            .animation(.spring(response: 0.2, dampingFraction: 0.6), value: deleteHovered)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 8)
@@ -282,4 +304,3 @@ private struct HistoryRow: View {
         .animation(.easeInOut(duration: 0.1), value: isHovered)
     }
 }
-
