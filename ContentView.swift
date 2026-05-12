@@ -14,6 +14,7 @@ struct ContentView: View {
             }
             .frame(width: 540)
         }
+        .frame(width: 721, height: 520)   // 固定窗口大小
         .alert("转换完成", isPresented: $vm.showSuccess) {
             Button("在 Finder 中显示") { vm.revealInFinder() }
             Button("确定") {}
@@ -32,13 +33,8 @@ struct ContentView: View {
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("历史记录")
-                        .font(.headline)
-                    Text(" ")
-                        .font(.caption)
-                        .opacity(0)
-                }
+                Text("历史记录")
+                    .font(.headline)
                 Spacer()
                 if !vm.history.isEmpty {
                     HoverScale {
@@ -50,7 +46,7 @@ struct ContentView: View {
                 }
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 10)
+            .frame(height: 46)   // 与右侧 header 等高，文字自然垂直居中
             .background(Color(NSColor.controlBackgroundColor))
 
             Divider()
@@ -176,7 +172,7 @@ struct ContentView: View {
                 }
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .frame(height: 46)   // 与 sidebar header 等高
             .background(Color(NSColor.controlBackgroundColor))
 
             Divider()
