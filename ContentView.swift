@@ -31,13 +31,16 @@ struct ContentView: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // Header — 用双行结构与右侧 header 底部对齐
             HStack {
-                Text("历史记录")
-                    .font(.headline)
-                Spacer()
-                if !vm.history.isEmpty {
-                    ClearButton { vm.clearHistory() }
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("历史记录")
+                        .font(.headline)
+                    Text(" ")
+                        .font(.caption)
+                        .opacity(0)   // 占位行，不可见
                 }
+                Spacer()
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
@@ -68,6 +71,15 @@ struct ContentView: View {
                     .padding(.vertical, 4)
                     .padding(.horizontal, 6)
                 }
+
+                Divider()
+                HStack {
+                    Spacer()
+                    ClearButton { vm.clearHistory() }
+                    Spacer()
+                }
+                .padding(.vertical, 10)
+                .background(Color(NSColor.controlBackgroundColor))
             }
         }
         .frame(width: 180)
