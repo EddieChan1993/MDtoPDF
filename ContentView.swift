@@ -32,20 +32,25 @@ struct ContentView: View {
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("历史记录")
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("历史记录")
+                        .font(.headline)
+                    Text(" ")
+                        .font(.caption)
+                        .opacity(0)
+                }
                 Spacer()
                 if !vm.history.isEmpty {
                     HoverScale {
                         Button("清空") { vm.clearHistory() }
                             .buttonStyle(.bordered)
-                            .controlSize(.mini)
+                            .controlSize(.small)
                             .tint(.red)
                     }
                 }
             }
             .padding(.horizontal, 12)
-            .frame(maxWidth: .infinity, minHeight: 53)
+            .padding(.vertical, 10)
             .background(Color(NSColor.controlBackgroundColor))
 
             Divider()
