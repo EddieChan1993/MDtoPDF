@@ -84,10 +84,10 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
         let info = NSPrintInfo()
         // A4 in points (72 pt/inch): 595.28 × 841.89
         info.paperSize    = NSSize(width: 595.28, height: 841.89)
-        info.topMargin    = 40
-        info.bottomMargin = 40
-        info.leftMargin   = 36
-        info.rightMargin  = 36
+        info.topMargin    = 36
+        info.bottomMargin = 36
+        info.leftMargin   = 28
+        info.rightMargin  = 28
         info.isHorizontallyCentered = false
         info.isVerticallyCentered   = false
         info.jobDisposition = .save
@@ -105,16 +105,20 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
 
     @objc private func printOpDidRun(_ op: NSPrintOperation, success: Bool,
                                      contextInfo: UnsafeMutableRawPointer?) {
-        guard success else { finish(.failure(ExportError.printFailed)); return }
+        // NSPrintOperation may invoke this callback on a background thread (macOS 26+).
+        // All UI teardown (window?.close) must happen on the main thread.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            guard success else { self.finish(.failure(ExportError.printFailed)); return }
 
-        // 打印完成后添加 PDF 书签 Outline
-        if !headings.isEmpty,
-           let data = try? Data(contentsOf: outputURL) {
-            let patched = addPDFOutline(to: data, headings: headings)
-            try? patched.write(to: outputURL, options: .atomic)
+            if !self.headings.isEmpty,
+               let data = try? Data(contentsOf: self.outputURL) {
+                let patched = self.addPDFOutline(to: data, headings: self.headings)
+                try? patched.write(to: self.outputURL, options: .atomic)
+            }
+
+            self.finish(.success(()))
         }
-
-        finish(.success(()))
     }
 
     // MARK: - PDF Outline (Bookmarks)

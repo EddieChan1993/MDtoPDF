@@ -15,11 +15,12 @@ err()  { echo -e "${RED}  ✗ $1${NC}"; exit 1; }
 
 # ─── 路径配置 ─────────────────────────────────────────────
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_NAME="MDtoPDF"
-SOURCES_DIR="$DIR/Sources/$APP_NAME"
+BINARY_NAME="MDtoPDF"          # SPM target 名 / 可执行文件名，不要改
+APP_DISPLAY_NAME="GrapePress"  # 显示给用户的 app 名字
+SOURCES_DIR="$DIR/Sources/$BINARY_NAME"
 PACKAGE_FILE="$DIR/Package.swift"
 BUILD_DIR="$DIR/.build/release"
-OUTPUT_APP="$DIR/$APP_NAME.app"
+OUTPUT_APP="$DIR/$APP_DISPLAY_NAME.app"
 
 # ─── 生成 App Icon ────────────────────────────────────────
 step "生成 App Icon"
@@ -68,7 +69,7 @@ mkdir -p "$SOURCES_DIR"
 for f in "${REQUIRED[@]}"; do
     cp -f "$DIR/$f" "$SOURCES_DIR/$f"
 done
-ok "源文件已复制到 Sources/$APP_NAME/"
+ok "源文件已复制到 Sources/$BINARY_NAME/"
 
 cat > "$PACKAGE_FILE" << 'PKGEOF'
 // swift-tools-version: 5.9
@@ -97,7 +98,7 @@ else
     err "编译失败，请查看上方错误信息"
 fi
 
-EXECUTABLE="$BUILD_DIR/$APP_NAME"
+EXECUTABLE="$BUILD_DIR/$BINARY_NAME"
 if [ ! -f "$EXECUTABLE" ]; then
     err "编译产物未找到: $EXECUTABLE"
 fi
@@ -106,9 +107,9 @@ fi
 step "创建 .app Bundle"
 
 # 如果 app 正在运行，先关闭
-if pgrep -x "$APP_NAME" &>/dev/null; then
-    warn "检测到 $APP_NAME 正在运行，正在关闭..."
-    pkill -x "$APP_NAME" || true
+if pgrep -x "$APP_DISPLAY_NAME" &>/dev/null; then
+    warn "检测到 $APP_DISPLAY_NAME 正在运行，正在关闭..."
+    pkill -x "$APP_DISPLAY_NAME" || true
     sleep 1
 fi
 
@@ -117,9 +118,9 @@ mkdir -p "$OUTPUT_APP/Contents/MacOS"
 mkdir -p "$OUTPUT_APP/Contents/Resources"
 ok "Bundle 目录结构已创建"
 
-# 复制可执行文件
-cp "$EXECUTABLE" "$OUTPUT_APP/Contents/MacOS/$APP_NAME"
-chmod +x "$OUTPUT_APP/Contents/MacOS/$APP_NAME"
+# 复制可执行文件（重命名为 display name，与 CFBundleExecutable 对应）
+cp "$EXECUTABLE" "$OUTPUT_APP/Contents/MacOS/$APP_DISPLAY_NAME"
+chmod +x "$OUTPUT_APP/Contents/MacOS/$APP_DISPLAY_NAME"
 ok "可执行文件已复制"
 
 # 复制图标
@@ -137,9 +138,9 @@ cat > "$OUTPUT_APP/Contents/Info.plist" << PLISTEOF
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>$APP_NAME</string>
+    <string>$APP_DISPLAY_NAME</string>
     <key>CFBundleDisplayName</key>
-    <string>GrapePress</string>
+    <string>$APP_DISPLAY_NAME</string>
     <key>CFBundleIdentifier</key>
     <string>com.localuser.MDtoPDF</string>
     <key>CFBundleVersion</key>
@@ -147,7 +148,7 @@ cat > "$OUTPUT_APP/Contents/Info.plist" << PLISTEOF
     <key>CFBundleShortVersionString</key>
     <string>1.0</string>
     <key>CFBundleExecutable</key>
-    <string>$APP_NAME</string>
+    <string>$APP_DISPLAY_NAME</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>NSPrincipalClass</key>
@@ -184,7 +185,7 @@ echo -e "│  文件大小: $APP_SIZE"
 echo -e "└──────────────────────────────────────────────${NC}"
 echo ""
 echo -e "  运行方式："
-echo -e "    双击 MDtoPDF.app  （推荐）"
+echo -e "    双击 $APP_DISPLAY_NAME.app  （推荐）"
 echo -e "    open \"$OUTPUT_APP\""
 echo ""
 echo -e "  如果 macOS 提示"无法验证开发者"："
