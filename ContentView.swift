@@ -154,19 +154,19 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                 }
                 Spacer()
-                if !vm.isConverting {
-                    HStack(spacing: 8) {
-                        HoverScale {
-                            Button("导入") { vm.pickFolder() }
-                                .buttonStyle(.bordered)
-                                .controlSize(.small)
-                        }
-                        HoverScale {
-                            Button("清空") { vm.reset() }
-                                .buttonStyle(.bordered)
-                                .controlSize(.small)
-                                .tint(.red)
-                        }
+                HStack(spacing: 8) {
+                    HoverScale {
+                        Button("导入") { vm.pickFolder() }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .disabled(vm.isConverting)
+                    }
+                    HoverScale {
+                        Button("清空") { vm.reset() }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .tint(.red)
+                            .disabled(vm.isConverting)
                     }
                 }
             }
@@ -200,7 +200,7 @@ struct ContentView: View {
                 }
                 .onMove { from, to in vm.mdFiles.move(fromOffsets: from, toOffset: to) }
             }
-            .listStyle(.bordered(alternatesRowBackgrounds: true))
+            .listStyle(.inset(alternatesRowBackgrounds: true))
         }
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
             vm.handleDrop(providers: providers)
@@ -221,11 +221,20 @@ struct ContentView: View {
             }
             .opacity(vm.isConverting ? 1 : 0)
 
-            HoverScale {
-                Button("开始转换") { vm.startConversion() }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .disabled(vm.mdFiles.isEmpty || vm.isConverting)
+            if vm.isConverting {
+                HoverScale {
+                    Button("取消") { vm.cancelConversion() }
+                        .buttonStyle(.bordered)
+                        .controlSize(.large)
+                        .tint(.red)
+                }
+            } else {
+                HoverScale {
+                    Button("开始转换") { vm.startConversion() }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .disabled(vm.mdFiles.isEmpty)
+                }
             }
         }
         .padding(.horizontal, 16)

@@ -18,6 +18,8 @@ class AppViewModel: ObservableObject {
     @Published var errorMessage = ""
     @Published var outputURL: URL?
 
+    private var conversionTask: Task<Void, Never>?
+
     init() { loadHistory() }
 
     // MARK: - History
@@ -117,7 +119,15 @@ class AppViewModel: ObservableObject {
         isConverting = true
         progress = 0
         statusMessage = "准备中..."
-        Task { await convert(to: saveURL) }
+        conversionTask = Task { await convert(to: saveURL) }
+    }
+
+    func cancelConversion() {
+        conversionTask?.cancel()
+        conversionTask = nil
+        isConverting = false
+        progress = 0
+        statusMessage = ""
     }
 
     // MARK: - Conversion
@@ -128,6 +138,8 @@ class AppViewModel: ObservableObject {
         var chapters: [Chapter] = []
 
         for (i, fileURL) in files.enumerated() {
+            guard !Task.isCancelled else { cancelConversion(); return }
+
             statusMessage = "解析: \(fileURL.lastPathComponent)"
             progress = Double(i) / total * 0.75
 
@@ -148,6 +160,8 @@ class AppViewModel: ObservableObject {
                                     html: result.html, headings: result.headings))
         }
 
+        guard !Task.isCancelled else { cancelConversion(); return }
+
         statusMessage = "渲染中，生成 PDF..."
         progress = 0.85
 
@@ -162,11 +176,13 @@ class AppViewModel: ObservableObject {
             statusMessage = "导出 PDF..."
             progress = 0.92
             try await PDFExporter.export(html: fullHTML, headings: outlineHeadings, to: saveURL)
+            guard !Task.isCancelled else { cancelConversion(); return }
             progress = 1.0
             statusMessage = "完成！"
             isConverting = false
             showSuccess = true
         } catch {
+            guard !Task.isCancelled else { cancelConversion(); return }
             isConverting = false
             errorMessage = error.localizedDescription
             showError = true

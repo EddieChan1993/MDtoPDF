@@ -5,7 +5,7 @@ struct MDtoPDFApp: App {
     var body: some Scene {
         WindowGroup("GrapePress") {
             ContentView()
-                .frame(width: 721, height: 520)
+                .frame(width: 721, height: 440)
         }
         .windowResizability(.contentSize)
         .commands {
