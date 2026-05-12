@@ -9,11 +9,10 @@ struct ContentView: View {
             Divider()
             VStack(spacing: 0) {
                 mainArea
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 Divider()
                 bottomBar
             }
-            .frame(width: 540, height: 520)
+            .frame(width: 540)
         }
         .alert("转换完成", isPresented: $vm.showSuccess) {
             Button("在 Finder 中显示") { vm.revealInFinder() }
@@ -76,7 +75,7 @@ struct ContentView: View {
                 }
             }
         }
-        .frame(width: 180, height: 520)
+        .frame(width: 180)
         .background(Color(NSColor.windowBackgroundColor))
     }
 
@@ -202,7 +201,6 @@ struct ContentView: View {
                 .onMove { from, to in vm.mdFiles.move(fromOffsets: from, toOffset: to) }
             }
             .listStyle(.bordered(alternatesRowBackgrounds: true))
-            .frame(height: min(CGFloat(vm.mdFiles.count) * 35 + 2, 280))
         }
         .onDrop(of: [.fileURL], isTargeted: nil) { providers in
             vm.handleDrop(providers: providers)
