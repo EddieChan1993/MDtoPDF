@@ -38,7 +38,7 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
         _activeTask = self
 
         // WebView 宽度 = 打印内容区宽度（纸张 - 左右边距），消除缩放引起的跨机器偏移
-        let printableWidth: CGFloat = 595.28 - 10 - 10  // 575.28pt
+        let printableWidth: CGFloat = 595.28 - 28 - 28  // 539.28pt
         let frame = NSRect(x: 0, y: 0, width: printableWidth, height: 842)
         let win = NSWindow(
             contentRect: NSRect(x: -20_000, y: -20_000, width: printableWidth, height: 842),
@@ -85,10 +85,10 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
         let info = NSPrintInfo()
         // A4 in points (72 pt/inch): 595.28 × 841.89
         info.paperSize    = NSSize(width: 595.28, height: 841.89)
-        info.topMargin    = 20
-        info.bottomMargin = 20
-        info.leftMargin   = 10
-        info.rightMargin  = 10
+        info.topMargin    = 28
+        info.bottomMargin = 28
+        info.leftMargin   = 28
+        info.rightMargin  = 28
         info.isHorizontallyCentered = false
         info.isVerticallyCentered   = false
         info.jobDisposition = .save
