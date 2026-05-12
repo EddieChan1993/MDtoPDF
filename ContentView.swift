@@ -9,12 +9,12 @@ struct ContentView: View {
             Divider()
             VStack(spacing: 0) {
                 mainArea
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 Divider()
                 bottomBar
             }
-            .frame(width: 540)
+            .frame(width: 540, height: 520)
         }
-        .frame(width: 721, height: 520)   // 固定窗口大小
         .alert("转换完成", isPresented: $vm.showSuccess) {
             Button("在 Finder 中显示") { vm.revealInFinder() }
             Button("确定") {}
@@ -76,7 +76,7 @@ struct ContentView: View {
                 }
             }
         }
-        .frame(width: 180)
+        .frame(width: 180, height: 520)
         .background(Color(NSColor.windowBackgroundColor))
     }
 
