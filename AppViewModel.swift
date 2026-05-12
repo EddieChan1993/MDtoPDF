@@ -7,6 +7,9 @@ class AppViewModel: ObservableObject {
     @Published var folderURL: URL?
     @Published var mdFiles: [URL] = []
     @Published var isDragging = false
+    @Published var history: [URL] = []
+
+    private let historyKey = "folderHistory"
     @Published var isConverting = false
     @Published var progress: Double = 0
     @Published var statusMessage = ""
@@ -14,6 +17,37 @@ class AppViewModel: ObservableObject {
     @Published var showError = false
     @Published var errorMessage = ""
     @Published var outputURL: URL?
+
+    init() { loadHistory() }
+
+    // MARK: - History
+
+    private func loadHistory() {
+        let paths = UserDefaults.standard.stringArray(forKey: historyKey) ?? []
+        history = paths.compactMap { URL(fileURLWithPath: $0) }
+            .filter { FileManager.default.fileExists(atPath: $0.path) }
+    }
+
+    private func saveHistory() {
+        UserDefaults.standard.set(history.map(\.path), forKey: historyKey)
+    }
+
+    func addToHistory(_ url: URL) {
+        history.removeAll { $0 == url }
+        history.insert(url, at: 0)
+        if history.count > 20 { history = Array(history.prefix(20)) }
+        saveHistory()
+    }
+
+    func removeFromHistory(_ url: URL) {
+        history.removeAll { $0 == url }
+        saveHistory()
+    }
+
+    func clearHistory() {
+        history = []
+        saveHistory()
+    }
 
     // MARK: - Drop
 
@@ -35,6 +69,7 @@ class AppViewModel: ObservableObject {
 
     func loadFolder(_ url: URL) {
         folderURL = url
+        addToHistory(url)
         let fm = FileManager.default
         guard let items = try? fm.contentsOfDirectory(
             at: url, includingPropertiesForKeys: [.isRegularFileKey], options: .skipsHiddenFiles

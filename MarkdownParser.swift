@@ -509,8 +509,8 @@ mark {
 
 @media print {
     body { print-color-adjust: exact; -webkit-print-color-adjust: exact; font-size: 14pt; }
-    .toc-page { padding: 40px 50px 30px; }
-    .chapter { padding: 20px 50px; }
+    .toc-page { padding: 0; }
+    .chapter { padding: 0; }
     section.chapter { page-break-before: always; break-before: page; }
     section.toc-page { page-break-after: always; break-after: page; }
 }

@@ -4,12 +4,16 @@ struct ContentView: View {
     @StateObject private var vm = AppViewModel()
 
     var body: some View {
-        VStack(spacing: 0) {
-            mainArea
+        HStack(spacing: 0) {
+            sidebar
             Divider()
-            bottomBar
+            VStack(spacing: 0) {
+                mainArea
+                Divider()
+                bottomBar
+            }
+            .frame(width: 540)
         }
-        .frame(width: 540)
         .alert("转换完成", isPresented: $vm.showSuccess) {
             Button("在 Finder 中显示") { vm.revealInFinder() }
             Button("确定") {}
@@ -21,6 +25,67 @@ struct ContentView: View {
         } message: {
             Text(vm.errorMessage)
         }
+    }
+
+    // MARK: - Sidebar
+
+    private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("历史记录")
+                    .font(.headline)
+                Spacer()
+                if !vm.history.isEmpty {
+                    Button("清空") { vm.clearHistory() }
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(Color(NSColor.controlBackgroundColor))
+
+            Divider()
+
+            if vm.history.isEmpty {
+                VStack {
+                    Spacer()
+                    Text("暂无历史记录")
+                        .font(.caption)
+                        .foregroundColor(Color.secondary.opacity(0.6))
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+            } else {
+                List {
+                    ForEach(vm.history, id: \.self) { url in
+                        HStack(spacing: 6) {
+                            Image(systemName: "folder.fill")
+                                .font(.caption)
+                                .foregroundColor(.accentColor)
+                            Text(url.lastPathComponent)
+                                .font(.caption)
+                                .lineLimit(2)
+                                .help(url.path)
+                            Spacer()
+                            Button(action: { vm.removeFromHistory(url) }) {
+                                Image(systemName: "xmark")
+                                    .font(.system(size: 9))
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundColor(Color.secondary.opacity(0.5))
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture { vm.loadFolder(url) }
+                        .padding(.vertical, 2)
+                    }
+                }
+                .listStyle(.plain)
+            }
+        }
+        .frame(width: 160)
+        .background(Color(NSColor.windowBackgroundColor))
     }
 
     // MARK: - Main Area
@@ -96,9 +161,12 @@ struct ContentView: View {
                 }
                 Spacer()
                 if !vm.isConverting {
-                    Button("重新选择") { vm.reset() }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
+                    Button(action: { vm.reset() }) {
+                        Image(systemName: "house")
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .help("返回首页")
                 }
             }
             .padding(.horizontal, 16)
