@@ -38,9 +38,7 @@ struct ContentView: View {
                 if !vm.history.isEmpty {
                     HoverScale {
                         Button("清空") { vm.clearHistory() }
-                            .buttonStyle(.plain)
-                            .controlSize(.small)
-                            .foregroundStyle(.secondary)
+                            .buttonStyle(GhostButtonStyle())
                             .font(.subheadline)
                     }
                 }
@@ -245,6 +243,15 @@ struct ContentView: View {
 }
 
 // MARK: - HoverScale
+
+// 无边框、无 focus ring 的朴素按钮样式
+private struct GhostButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundStyle(Color.secondary)
+            .opacity(configuration.isPressed ? 0.5 : 1.0)
+    }
+}
 
 private struct HoverScale<Content: View>: View {
     @State private var hovered = false

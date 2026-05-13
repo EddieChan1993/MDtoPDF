@@ -39,8 +39,9 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
     func start() {
         _activeTask = self
 
-        // WebView 宽度 = 纸张宽 - 左右边距，新版 macOS 内容按 frame 宽渲染再叠加 margin
-        let printableWidth: CGFloat = 595.28 - hMargin * 2  // 499.28pt
+        // WebView 宽度 = 完整 A4 纸张宽；边距由 CSS padding 控制，不依赖 NSPrintInfo margin
+        // 这样在新旧 macOS 上行为一致（新版 macOS 的 NSPrintInfo margin 对 WKWebView 无效）
+        let printableWidth: CGFloat = 595.28
         let frame = NSRect(x: 0, y: 0, width: printableWidth, height: 842)
         let win = NSWindow(
             contentRect: NSRect(x: -20_000, y: -20_000, width: printableWidth, height: 842),
@@ -87,10 +88,10 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
         let info = NSPrintInfo()
         // A4 in points (72 pt/inch): 595.28 × 841.89
         info.paperSize    = NSSize(width: 595.28, height: 841.89)
-        info.topMargin    = 40
-        info.bottomMargin = 40
-        info.leftMargin   = hMargin
-        info.rightMargin  = hMargin
+        info.topMargin    = 0
+        info.bottomMargin = 0
+        info.leftMargin   = 0
+        info.rightMargin  = 0
         info.isHorizontallyCentered = false
         info.isVerticallyCentered   = false
         info.jobDisposition = .save
