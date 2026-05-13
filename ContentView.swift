@@ -38,9 +38,10 @@ struct ContentView: View {
                 if !vm.history.isEmpty {
                     HoverScale {
                         Button("清空") { vm.clearHistory() }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.plain)
                             .controlSize(.small)
-                            .tint(.red)
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
                     }
                 }
             }
@@ -163,9 +164,10 @@ struct ContentView: View {
                     }
                     HoverScale {
                         Button("清空") { vm.reset() }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.plain)
                             .controlSize(.small)
-                            .tint(.red)
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
                             .disabled(vm.isConverting)
                     }
                 }
