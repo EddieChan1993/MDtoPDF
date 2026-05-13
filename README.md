@@ -2,6 +2,10 @@
 
 A macOS app that converts a folder of Markdown files into a paginated A4 PDF ebook — with a table of contents, chapter page breaks, PDF bookmarks, and embedded images.
 
+## Screenshot
+
+![GrapePress App](pic.png)
+
 ## Features
 
 - Drag & drop a folder containing `.md` files
