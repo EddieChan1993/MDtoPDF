@@ -18,6 +18,8 @@ enum PDFExporter {
 // MARK: - Render Task
 
 private var _activeTask: RenderTask?
+// 左右边距（点），webview frame 宽与 NSPrintInfo margin 保持一致
+private let hMargin: CGFloat = 48
 
 private final class RenderTask: NSObject, WKNavigationDelegate {
     let html: String
@@ -37,8 +39,8 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
     func start() {
         _activeTask = self
 
-        // WebView 宽度 = 打印内容区宽度（纸张 - 左右边距），消除缩放引起的跨机器偏移
-        let printableWidth: CGFloat = 595.28 - 15 - 15  // 565.28pt
+        // WebView 宽度 = 纸张宽 - 左右边距，新版 macOS 内容按 frame 宽渲染再叠加 margin
+        let printableWidth: CGFloat = 595.28 - hMargin * 2  // 499.28pt
         let frame = NSRect(x: 0, y: 0, width: printableWidth, height: 842)
         let win = NSWindow(
             contentRect: NSRect(x: -20_000, y: -20_000, width: printableWidth, height: 842),
@@ -85,10 +87,10 @@ private final class RenderTask: NSObject, WKNavigationDelegate {
         let info = NSPrintInfo()
         // A4 in points (72 pt/inch): 595.28 × 841.89
         info.paperSize    = NSSize(width: 595.28, height: 841.89)
-        info.topMargin    = 28
-        info.bottomMargin = 28
-        info.leftMargin   = 15
-        info.rightMargin  = 15
+        info.topMargin    = 40
+        info.bottomMargin = 40
+        info.leftMargin   = hMargin
+        info.rightMargin  = hMargin
         info.isHorizontallyCentered = false
         info.isVerticallyCentered   = false
         info.jobDisposition = .save
